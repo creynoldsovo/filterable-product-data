@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { ProductRow } from './ProductRow/ProductRow';
 import { SearchBar } from './SearchBar/SearchBar';
+import { StyledTable, StyledTableHeading } from './styled/StyledTable';
 
 export class FilterableProductTable extends Component {
 
@@ -26,21 +27,7 @@ export class FilterableProductTable extends Component {
       });
   }
 
-  setSearchTerm(value) {
-    this.setState({ searchTerm: value });
-  }
-
-  setInStockOnly(value) {
-    this.setState({ inStockOnly: value });
-  }
-
-  generateKeyId(keyName, item) {
-    // return `${ keyName }-${ item.replace(' ', '-').toLowerCase() }`;
-    return keyName + '-' + item.replace(' ', '-').toLowerCase();
-  }
-
-  render() {
-
+  getDOM() {
     const rows = [];
     let category;
 
@@ -58,7 +45,7 @@ export class FilterableProductTable extends Component {
 
         rows.push(
           <tr key={ this.generateKeyId('category', product.category) }>
-            <th colSpan="2">{ product.category }</th>
+            <StyledTableHeading colSpan="2">{ product.category }</StyledTableHeading>
           </tr>
         )
       }
@@ -74,13 +61,33 @@ export class FilterableProductTable extends Component {
       category = product.category;
     });
 
+    return rows;
+  }
+
+  setSearchTerm(value) {
+    this.setState({ searchTerm: value });
+  }
+
+  setInStockOnly(value) {
+    this.setState({ inStockOnly: value });
+  }
+
+  generateKeyId(keyName, item) {
+    // return `${ keyName }-${ item.replace(' ', '-').toLowerCase() }`;
+    return keyName + '-' + item.replace(' ', '-').toLowerCase();
+  }
+
+  render() {
+
+    const DOM = this.getDOM();
+
     return (
       <div className="filterable-products">
         <SearchBar
           searchTerm={ this.state.searchTerm }
           onSearchTermChange={ this.setSearchTerm.bind(this) }
           onInStockOnlyChange={ this.setInStockOnly.bind(this) } />
-        <table className="filterable-products__table">
+        <StyledTable className="filterable-products__table">
           <thead>
             <tr>
               <th>Name</th>
@@ -88,9 +95,9 @@ export class FilterableProductTable extends Component {
             </tr>
           </thead>
           <tbody>
-            { rows }
+            { DOM }
           </tbody>
-        </table>
+        </StyledTable>
       </div>
     );
   }
