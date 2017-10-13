@@ -31,31 +31,26 @@ export class FilterableProductTable extends Component {
     const rows = [];
     const categories = new Set();
 
-    this.state.products.forEach(product => categories.add(product.category));
-
-    Array.from(categories).map(category => {
+    this.state.products.filter(this.searchFilter.bind(this)).map(product => {
+      
+      if (Array.from(categories).indexOf(product.category) === -1) {
+        rows.push(
+          <tr key={ this.generateKeyId('category', product.category) }>
+            <StyledTableHeading colSpan="2">{ product.category }</StyledTableHeading>
+          </tr>
+        );
+      }
 
       rows.push(
-        <tr key={ this.generateKeyId('category', category) }>
-          <StyledTableHeading colSpan="2">{ category }</StyledTableHeading>
-        </tr>
+        <ProductRow
+          key={ this.generateKeyId('product', product.name) }
+          name={ product.name }
+          price={ product.price }
+          stocked={ product.stocked } />
       );
 
-      this.state.products
-        .filter(product => {
-          const name = product.name.toLowerCase();
-          return product.category === category && name.indexOf(this.state.searchTerm) > -1
-        })
-        .forEach(product => {
-          rows.push(
-            <ProductRow
-              key={ this.generateKeyId('product', product.name) }
-              name={ product.name }
-              price={ product.price }
-              stocked={ product.stocked } />
-          );
-        });
-    });
+      categories.add(product.category);
+    }) 
 
     return rows;
   }
@@ -66,6 +61,10 @@ export class FilterableProductTable extends Component {
 
   setInStockOnly(value) {
     this.setState({ inStockOnly: value });
+  }
+
+  searchFilter(product) {
+    return product.name.toLowerCase().indexOf(this.state.searchTerm) > -1;
   }
 
   generateKeyId(keyName, item) {
