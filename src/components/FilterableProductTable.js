@@ -27,45 +27,41 @@ export class FilterableProductTable extends Component {
       });
   }
 
-  getDOM() {
+  getRows() {
     const rows = [];
-    let category;
+    const categories = new Set();
 
-    this.state.products.forEach(product => {
+    this.state.products.forEach(product => categories.add(product.category));
 
-      if (this.state.inStockOnly && !product.stocked) {
-        return;
-      }
-
-      if (product.name.toLowerCase().indexOf(this.state.searchTerm.toLowerCase()) === -1) {
-        return;
-      }
-
-      if (product.category !== category) {
-
-        rows.push(
-          <tr key={ this.generateKeyId('category', product.category) }>
-            <StyledTableHeading colSpan="2">{ product.category }</StyledTableHeading>
-          </tr>
-        )
-      }
+    Array.from(categories).map(category => {
 
       rows.push(
-        <ProductRow
-          key={ this.generateKeyId('product', product.name) }
-          name={ product.name }
-          price={ product.price }
-          stocked={ product.stocked } />
+        <tr key={ this.generateKeyId('category', category) }>
+          <StyledTableHeading colSpan="2">{ category }</StyledTableHeading>
+        </tr>
       );
 
-      category = product.category;
+      this.state.products
+        .filter(product => {
+          const name = product.name.toLowerCase();
+          return product.category === category && name.indexOf(this.state.searchTerm) > -1
+        })
+        .forEach(product => {
+          rows.push(
+            <ProductRow
+              key={ this.generateKeyId('product', product.name) }
+              name={ product.name }
+              price={ product.price }
+              stocked={ product.stocked } />
+          );
+        });
     });
 
     return rows;
   }
 
   setSearchTerm(value) {
-    this.setState({ searchTerm: value });
+    this.setState({ searchTerm: value.toLowerCase() });
   }
 
   setInStockOnly(value) {
@@ -73,13 +69,12 @@ export class FilterableProductTable extends Component {
   }
 
   generateKeyId(keyName, item) {
-    // return `${ keyName }-${ item.replace(' ', '-').toLowerCase() }`;
-    return keyName + '-' + item.replace(' ', '-').toLowerCase();
+    return `${ keyName }-${ item.replace(' ', '-').toLowerCase() }`;
   }
 
   render() {
 
-    const DOM = this.getDOM();
+    const rows = this.getRows();
 
     return (
       <div className="filterable-products">
@@ -95,7 +90,7 @@ export class FilterableProductTable extends Component {
             </tr>
           </thead>
           <tbody>
-            { DOM }
+            { rows }
           </tbody>
         </StyledTable>
       </div>
