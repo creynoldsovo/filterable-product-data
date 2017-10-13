@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { ProductRow } from './ProductRow/ProductRow';
 import { SearchBar } from './SearchBar/SearchBar';
-import { StyledTable, StyledTableHeading } from './styled/StyledTable';
+import { StyledTable, StyledTableHeading } from './styled/tables';
 
 export class FilterableProductTable extends Component {
 

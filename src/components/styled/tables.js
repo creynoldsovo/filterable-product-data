@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const StyledTable = styled.table`
-  margin-top: 48px;
-  width: 100%;
+  margin: 48px auto;
+  width: 320px;
   text-align: left;
 `;
 

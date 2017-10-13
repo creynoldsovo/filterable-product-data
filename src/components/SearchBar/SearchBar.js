@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyledTextField } from '../styled/StyledTextField';
+import { StyledCheckbox, StyledLabel, StyledTextField,  } from '../styled/forms';
 
 export class SearchBar extends Component {
 
@@ -19,13 +19,13 @@ export class SearchBar extends Component {
           placeholder="Search&hellip;"
           value={ this.props.searchTerm }
           onChange={ this.onSearchChange.bind(this) } />
-        <label>
-          <input type="checkbox"
+        <StyledLabel>
+          <StyledCheckbox
             name="inStockOnly"
             checked={ this.props.inStockOnly }
             onChange={ this.onStockOnlyChange.bind(this) } />
           &nbsp;Only show products in stock
-        </label>
+        </StyledLabel>
       </form>
     );
   }
